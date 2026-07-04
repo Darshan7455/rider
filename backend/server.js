@@ -27,8 +27,12 @@ app.use("/api/v1", driverroute);
 app.use("/api/v1", rideroute);
 
 // Listen on 0.0.0.0 so Render's load balancer can reach the server
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, "0.0.0.0", async () => {
     console.log(`Server started on port ${port}`);
-    dbconn();
-})
+    try {
+        await dbconn();
+    } catch (error) {
+        console.error("Database connection failed:", error.message);
+    }
+});
 
