@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { apiUrl } from "../utiles/api";
 
 function Makeride({ onRideCreated }) {
   const [ridedetail, setridedetail] = useState({
@@ -23,7 +24,7 @@ function Makeride({ onRideCreated }) {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/search-location?query=${encodeURIComponent(query)}`
+        `${apiUrl(`/api/v1/search-location?query=${encodeURIComponent(query)}`)}`
       );
       if (!res.ok) return;
 
@@ -61,7 +62,7 @@ function Makeride({ onRideCreated }) {
       }
 
       const res = await axios.post(
-        "http://localhost:5000/api/v1/makeride",
+        apiUrl("/api/v1/makeride"),
         {
           pickup: ridedetail.pickup,
           destination: ridedetail.destination,

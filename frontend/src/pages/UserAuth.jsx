@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { apiUrl } from "../utiles/api";
 
 function UserAuth({ type }) {
   const [userdata, setuserdata] = useState({ name: "", email: "", password: "" });
@@ -18,7 +19,7 @@ function UserAuth({ type }) {
     }
     try {
       setLoading(true);
-      const res = await axios.post(`http://localhost:5000/api/v1/${type}`, userdata);
+      const res = await axios.post(apiUrl(`/api/v1/${type}`), userdata);
       const token = res?.data?.user?.token;
       if (token) {
         localStorage.setItem("userToken", token);

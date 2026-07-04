@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { apiUrl } from "../utiles/api";
 function Auth({type}) {
     const [userdata, setuserdata] = useState({
     name: "",
@@ -12,7 +13,7 @@ function Auth({type}) {
     e.preventDefault();
      try {
       const res = await axios.post(
-        `http://localhost:5000/api/v1/${type}`,
+        apiUrl(`/api/v1/${type}`),
          userdata
       );
       toast.success(res.data.message); 

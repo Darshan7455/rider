@@ -6,6 +6,7 @@ import Makeride from "../components/makeride";
 import RideMap from "../components/RideMap";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { apiUrl } from "../utiles/api";
 
 function Home() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function Home() {
     try {
       const token = localStorage.getItem("userToken");
       if (!token) return;
-      const res = await axios.get("http://localhost:5000/api/v1/getactiveride", {
+      const res = await axios.get(apiUrl("/api/v1/getactiveride"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data.success) setActiveRide(res.data.activeRide);
@@ -42,7 +43,7 @@ function Home() {
       setCancelling(true);
       const token = localStorage.getItem("userToken");
       const res = await axios.post(
-        "http://localhost:5000/api/v1/cancelride",
+        apiUrl("/api/v1/cancelride"),
         { rideid: activeRide._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
