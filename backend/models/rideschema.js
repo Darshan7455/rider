@@ -17,11 +17,25 @@ const rideschema = new mongoose.Schema({
         type: String,
         required : true
     },
+    pickupcoords: {
+        lat: Number,
+        lng: Number
+    },
+
+    destinationcoords: {
+        lat: Number,
+        lng: Number
+    },
     status :{
         type : String ,
         required : true,
         enum : ["pending","complete","accepted","cancelled"]
-    }
+    },
+    skippedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "driver",
+        default: []
+    }]
 
 })
 

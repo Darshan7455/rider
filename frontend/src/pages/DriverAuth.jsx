@@ -1,114 +1,151 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-function driverAuth( {type}) {
-    const [driverdata, setdriverdata] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+function DriverAuth({ type }) {
+  const [driverdata, setdriverdata] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const isSignup = type === "driversignup";
+
   async function handleAuth(e) {
     e.preventDefault();
-     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/v1/${type}`,
-         driverdata
-      );
-      const token = res.data.driver.token;
-      console.log(res);
-      localStorage.setItem("driverToken", token);
-      toast.success(res.data.message);
-      navigate("/");
-    } catch (error) {
-      toast.error(error.response.data.message);
-    } 
-  }
-      const navigate = useNavigate();
-      const foruserlogin = () => {
-        navigate("/UserAuth");
-      };
-      const fordriverlogin = () => {
-        navigate("/DriverAuth");
-      };
-      const fordriversignup = () => {
-        navigate("/driversignup");
-      };
-      const forhome = () => {
+    if (!driverdata.email || !driverdata.password || (isSignup && !driverdata.name)) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await axios.post(`http://localhost:5000/api/v1/${type}`, driverdata);
+      const token = res?.data?.driver?.token;
+      if (token) {
+        localStorage.setItem("driverToken", token);
+        toast.success(res.data.message || "Welcome to Driver Dashboard!");
         navigate("/");
-      }; 
-      const handleLogout = () => {
-        try{
-          localStorage.clear();
-          navigate("/UserAuth");
-        }catch(error){
-          toast.error("please login")
-        }
-    };
- return (
-   <form className="bg-gray-400 h-screen " onSubmit={handleAuth}>
-      <button type="button" onClick={forhome} className="bg-gray-600 w-30 hover:bg-gray-300 h-10 relative top-20 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium">
-        home
-      </button>
-      <button type="button" onClick={handleLogout} className="bg-gray-600 w-30 hover:bg-gray-300 h-10 relative top-20 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium">
-        logout
-      </button>
-    <div className="flex justify-center items-center shadow-2xs bg-black-50 min-h-screen w-screen ">
-      <div className=" bg-gray-500  rounded-2xl h-100 w-100 shadow-2xs flex flex-col items-center ">
-        <div className="flex w-100 h-13 relative bottom-1  items-center justify-around">
-          <button type="button" onClick={foruserlogin} className="hover:bg-gray-300 border-b-4 bg-gray-600 rounded-2xl w-[50%] font-serif text-2xl h-11 flex items-center justify-center ">user login</button>
-          <button type="button" onClick={fordriverlogin} className="hover:bg-gray-300 border-b-4 bg-gray-600 rounded-2xl w-[50%] font-serif text-2xl h-11 flex items-center justify-center ">driver login</button>
+      } else {
+        toast.error("Authentication failed. Invalid server response.");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error?.message || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col justify-center items-center px-4 relative font-sans">
+      {/* Back */}
+      <Link
+        to="/"
+        className="absolute top-6 left-6 inline-flex items-center gap-2 text-gray-500 hover:text-black text-sm font-semibold transition-colors"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Home
+      </Link>
+
+      <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+        {/* Toggle Passenger / Driver */}
+        <div className="flex bg-gray-100 border border-gray-200 rounded-xl p-1 mb-8">
+          <button
+            onClick={() => navigate(isSignup ? "/usersignup" : "/UserAuth")}
+            className="flex-1 text-center py-2.5 rounded-lg text-xs font-bold text-gray-500 hover:text-black transition-all cursor-pointer"
+          >
+            Passenger
+          </button>
+          <button
+            onClick={() => navigate(isSignup ? "/driversignup" : "/DriverAuth")}
+            className="flex-1 text-center py-2.5 rounded-lg text-xs font-bold bg-black text-white shadow-sm transition-all cursor-pointer"
+          >
+            Driver
+          </button>
         </div>
-        {type === "driversignup" && <input
-          className="bg-gray-600 w-60 h-10 hover:bg-gray-300 relative top-7 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium"
-          type="name"
-          placeholder="name"
-          onChange={(e) =>
-            setdriverdata((prev) => ({ ...prev, name: e.target.value }))
-          }
-        /> }
-        <br />
-         <input
-          className="bg-gray-600 w-60 h-10 relative hover:bg-gray-300 top-7 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium"
-          type="email"
-          placeholder="email"
-          onChange={(e) =>
-            setdriverdata((prev) => ({ ...prev, email: e.target.value }))
-          }
-        />
-        <br />
-        <input
-          className="bg-gray-600 w-60 h-10 relative hover:bg-gray-300 top-7 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder:  text-center font-medium"
-          type="password"
-          placeholder="password"
-          onChange={(e) =>
-            setdriverdata((prev) => ({ ...prev, password: e.target.value }))
-          }
-        />
-        <br />
-        {type === "driversignup" ? (
-          <button
-            type="submit"
-            className="bg-gray-600  w-30 h-10 relative top-7 hover:bg-gray-300 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium"
-          >
-            driversignup
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="bg-gray-600  w-30 h-10 relative top-7 hover:bg-gray-300 border-b-4 rounded-bl-2xl rounded-tr-2xl placeholder: text-center font-medium"
-          >
-            driverlogin
-          </button>
-        )}
-        <br />
-        <p className=" relative top-3 underline font-bold" onClick={fordriversignup}>Signup ?</p>
+
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl font-black text-black tracking-tight">
+            {isSignup ? "Create Driver Account" : "Welcome Back"}
+          </h2>
+          <p className="text-gray-500 text-xs mt-1">
+            {isSignup ? "Sign up to start receiving ride requests" : "Sign in to your driver account"}
+          </p>
+        </div>
+
+        <form className="space-y-4" onSubmit={handleAuth}>
+          {isSignup && (
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                value={driverdata.name}
+                onChange={(e) => setdriverdata((prev) => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+          )}
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              Email Address
+            </label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+              value={driverdata.email}
+              onChange={(e) => setdriverdata((prev) => ({ ...prev, email: e.target.value }))}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+              value={driverdata.password}
+              onChange={(e) => setdriverdata((prev) => ({ ...prev, password: e.target.value }))}
+            />
+          </div>
+
+          <div className="pt-4">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-bold py-3.5 rounded-xl transition-all cursor-pointer text-sm disabled:opacity-50"
+            >
+              {loading ? "Please wait..." : isSignup ? "Sign Up" : "Log In"}
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-6 text-center">
+          {isSignup ? (
+            <p className="text-xs text-gray-500">
+              Already have an account?{" "}
+              <Link to="/DriverAuth" className="text-black font-semibold hover:underline">
+                Log In
+              </Link>
+            </p>
+          ) : (
+            <p className="text-xs text-gray-500">
+              Don't have an account?{" "}
+              <Link to="/driversignup" className="text-black font-semibold hover:underline">
+                Sign Up
+              </Link>
+            </p>
+          )}
+        </div>
       </div>
     </div>
-    </form>
-  )
-   
+  );
 }
 
-export default driverAuth
+export default DriverAuth;
