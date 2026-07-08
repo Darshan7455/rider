@@ -14,23 +14,15 @@ const allowedOrigins = [
     "https://rider-git-main-darshanshinde7455-5116s-projects.vercel.app",
 ].filter(Boolean);
 
-const corsOptions = {
-    origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
 
-        if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) {
-            return callback(null, true);
-        }
-
-        return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
     credentials: true,
-};
+  })
+);
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 app.use(express.json());
 
 
