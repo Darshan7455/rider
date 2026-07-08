@@ -22,11 +22,8 @@ app.use(
   })
 );
 
-app.use(cors(corsOptions));
 app.use(express.json());
 
-
-// Health-check — Render pings this to confirm the server is running
 app.get("/", (req, res) => {
     res.status(200).json({ status: "ok", message: "Rider API is running" });
 });
