@@ -13,6 +13,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL,
   "http://localhost:5173",
   "https://rider-delta.vercel.app",
+  "https://rider-theta.vercel.app",
   "https://rider-git-main-darshanshinde7455-5116s-projects.vercel.app",
 ];
 
