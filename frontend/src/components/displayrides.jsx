@@ -19,7 +19,7 @@ const Displayrides = () => {
       const token = localStorage.getItem("driverToken");
       if (!token) return;
 
-      const res = await axios.get(apiUrl("/api/v1/driver/getactiveride"), {
+      const res = await axios.get(apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/driver/getactiveride`), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -42,7 +42,7 @@ const Displayrides = () => {
         toast.error("Please login as a driver first");
         return;
       }
-      const res = await axios.get(apiUrl("/api/v1/showallrides"), {
+      const res = await axios.get(apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/showallrides`), {
         headers: { Authorization: `Bearer ${token}` },
       });
       setallridesdata(res.data.allrides || []);
@@ -59,7 +59,7 @@ const Displayrides = () => {
       setLoadingRideId(rideid);
       const token = localStorage.getItem("driverToken");
       const res = await axios.post(
-        apiUrl("/api/v1/acceptride"),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/acceptride`),
         { rideid },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -77,7 +77,7 @@ const Displayrides = () => {
     try {
       const token = localStorage.getItem("driverToken");
       const res = await axios.post(
-        apiUrl("/api/v1/skipride"),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/skipride`),
         { rideid },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -94,7 +94,7 @@ const Displayrides = () => {
       setLoading(true);
       const token = localStorage.getItem("driverToken");
       const res = await axios.post(
-        apiUrl("/api/v1/completeride"),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/completeride`),
         { rideid: acceptedRide._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -114,7 +114,7 @@ const Displayrides = () => {
       setLoading(true);
       const token = localStorage.getItem("driverToken");
       const res = await axios.post(
-        apiUrl("/api/v1/driver/cancelride"),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/driver/cancelride`),
         { rideid: acceptedRide._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );

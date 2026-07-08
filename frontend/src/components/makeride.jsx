@@ -62,7 +62,7 @@ function Makeride({ onRideCreated }) {
       }
 
       const res = await axios.post(
-        apiUrl("/api/v1/makeride"),
+        apiUrl(`$${import.meta.env.VITE_BASE_URL}/api/v1/makeride`),
         {
           pickup: ridedetail.pickup,
           destination: ridedetail.destination,

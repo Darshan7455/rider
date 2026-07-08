@@ -13,7 +13,7 @@ function Auth({type}) {
     e.preventDefault();
      try {
       const res = await axios.post(
-        apiUrl(`/api/v1/${type}`),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/${type}`),
          userdata
       );
       toast.success(res.data.message); 

@@ -19,7 +19,7 @@ function DriverAuth({ type }) {
     }
     try {
       setLoading(true);
-      const res = await axios.post(apiUrl(`/api/v1/${type}`), driverdata);
+      const res = await axios.post(apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/${type}`), driverdata);
       const token = res?.data?.driver?.token;
       if (token) {
         localStorage.setItem("driverToken", token);

@@ -28,7 +28,7 @@ function Home() {
     try {
       const token = localStorage.getItem("userToken");
       if (!token) return;
-      const res = await axios.get(apiUrl("/api/v1/getactiveride"), {
+      const res = await axios.get(apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/getactiveride`), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.data.success) setActiveRide(res.data.activeRide);
@@ -43,7 +43,7 @@ function Home() {
       setCancelling(true);
       const token = localStorage.getItem("userToken");
       const res = await axios.post(
-        apiUrl("/api/v1/cancelride"),
+        apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/cancelride`),
         { rideid: activeRide._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
