@@ -24,7 +24,7 @@ function Makeride({ onRideCreated }) {
 
     try {
       const res = await fetch(
-        `${apiUrl(`/api/v1/search-location?query=${encodeURIComponent(query)}`)}`
+        apiUrl(`/api/v1/search-location?query=${encodeURIComponent(query)}`)
       );
       if (!res.ok) return;
 
@@ -62,7 +62,7 @@ function Makeride({ onRideCreated }) {
       }
 
       const res = await axios.post(
-        apiUrl(`$${import.meta.env.VITE_BASE_URL}/api/v1/makeride`),
+        apiUrl(`/api/v1/makeride`),
         {
           pickup: ridedetail.pickup,
           destination: ridedetail.destination,

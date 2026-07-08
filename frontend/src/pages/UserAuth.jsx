@@ -19,7 +19,7 @@ function UserAuth({ type }) {
     }
     try {
       setLoading(true);
-      const res = await axios.post(apiUrl(`${import.meta.env.VITE_BASE_URL}/api/v1/${type}`), userdata);
+      const res = await axios.post(apiUrl(`/api/v1/${type}`), userdata);
       const token = res?.data?.user?.token;
       if (token) {
         localStorage.setItem("userToken", token);
