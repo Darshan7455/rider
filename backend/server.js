@@ -8,14 +8,31 @@ const cors = require("cors");
 const app = express()
 const port = process.env.PORT || 5000;
 
-const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"].filter(Boolean);
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173",
+    "https://rider-git-main-darshanshinde7455-5116s-projects.vercel.app",
+].filter(Boolean);
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-}));
+const corsOptions = {
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
 
+        if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
+
 
 // Health-check — Render pings this to confirm the server is running
 app.get("/", (req, res) => {
