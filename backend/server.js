@@ -9,8 +9,25 @@ const port = process.env.PORT || 5000;
 
 const cors = require("cors");
 
+const allowedOrigins = new Set([
+    "https://rider-blue.vercel.app",
+    "http://localhost:5173",
+    ...(process.env.FRONTEND_URL || "")
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+]);
 
-app.use(cors({ origin: process.env.FRONTEND_URL}));
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.has(origin)) {
+            callback(null, true);
+            return;
+        }
+
+        callback(new Error(`CORS origin not allowed: ${origin}`));
+    },
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -29,4 +46,3 @@ app.listen(port, "0.0.0.0", async () => {
         console.error("Database connection failed:", error.message);
     }
 });
-
