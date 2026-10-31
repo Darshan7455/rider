@@ -11,6 +11,7 @@ const cors = require("cors");
 
 const allowedOrigins = new Set([
     "https://rider-blue.vercel.app",
+    "https://rider-opal-delta.vercel.app",
     "http://localhost:5173",
     ...(process.env.FRONTEND_URL || "")
         .split(",")
